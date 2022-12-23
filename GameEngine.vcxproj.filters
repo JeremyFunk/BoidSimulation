@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\external">
+      <UniqueIdentifier>{7aa0b61a-3480-458e-9119-a1890b98cd2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\external\imgui">
+      <UniqueIdentifier>{b07b8e4c-4423-4fc7-a38e-0801f132c34f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\external">
+      <UniqueIdentifier>{23f66af4-58f6-42fb-bc40-63eb47aa0779}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\external\imgui">
+      <UniqueIdentifier>{0050e4f2-1b89-4c71-8edb-d21d92ca318e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\shaders">
+      <UniqueIdentifier>{173140fb-dc87-4110-b7f9-13a82eb48c84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\external\octree">
+      <UniqueIdentifier>{6a9ecdbf-f621-41ab-892c-2e9e0c0ea459}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GameEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_data\imgui.cpp">
+      <Filter>Source Files\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_data\imgui_demo.cpp">
+      <Filter>Source Files\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_data\imgui_draw.cpp">
+      <Filter>Source Files\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_data\imgui_impl_glfw.cpp">
+      <Filter>Source Files\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_data\imgui_impl_opengl3.cpp">
+      <Filter>Source Files\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_data\imgui_tables.cpp">
+      <Filter>Source Files\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_data\imgui_widgets.cpp">
+      <Filter>Source Files\external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="gl_wrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="boid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="window_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui_data\imconfig.h">
+      <Filter>Header Files\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui_data\imgui.h">
+      <Filter>Header Files\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui_data\imgui_impl_glfw.h">
+      <Filter>Header Files\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui_data\imgui_impl_opengl3.h">
+      <Filter>Header Files\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui_data\imgui_impl_opengl3_loader.h">
+      <Filter>Header Files\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui_data\imgui_internal.h">
+      <Filter>Header Files\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui_data\imstb_rectpack.h">
+      <Filter>Header Files\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui_data\imstb_textedit.h">
+      <Filter>Header Files\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui\imgui_data\imstb_truetype.h">
+      <Filter>Header Files\external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gl_wrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="boid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="threadPool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\octree\array.h">
+      <Filter>Header Files\external\octree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\octree\array2d.h">
+      <Filter>Header Files\external\octree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\octree\numtraits.h">
+      <Filter>Header Files\external\octree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\octree\octree.h">
+      <Filter>Header Files\external\octree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\octree\point3d.h">
+      <Filter>Header Files\external\octree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\octree\shareddata.h">
+      <Filter>Header Files\external\octree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\octree\tinyvector.h">
+      <Filter>Header Files\external\octree</Filter>
+    </ClInclude>
+    <ClInclude Include="particleSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vertex.vs">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="fragment.fs">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="particle.vs">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+    <None Include="particle.fs">
+      <Filter>Source Files\shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>
