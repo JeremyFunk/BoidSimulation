@@ -16,6 +16,39 @@ namespace Engine {
                 return glGetUniformLocation(program, uniform);
             }
 
+			ParticleShaderUniforms LoadParticleUniforms(const GLuint program) {
+				ParticleShaderUniforms u;
+				u.VP = LoadUniform(program, "VP");
+				u.CameraRight_worldspace = LoadUniform(program, "CameraRight_worldspace");
+				u.CameraUp_worldspace = LoadUniform(program, "CameraUp_worldspace");
+
+				const GLfloat g_vertex_buffer_data[] = {
+				 -0.5f, -0.5f, 0.0f,
+				  0.5f, -0.5f, 0.0f,
+				 -0.5f,  0.5f, 0.0f,
+				  0.5f,  0.5f, 0.0f,
+				};
+				glGenVertexArrays(1, &u.VAO);
+				glBindVertexArray(u.VAO);
+
+				glGenBuffers(1, &u.billboardVertexBuffer);
+				glBindBuffer(GL_ARRAY_BUFFER, u.billboardVertexBuffer);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+
+				// The VBO containing the positions and sizes of the particles
+				glGenBuffers(1, &u.billboardPositionBuffer);
+				glBindBuffer(GL_ARRAY_BUFFER, u.billboardPositionBuffer);
+				// Initialize with empty (NULL) buffer : it will be updated later, each frame.
+				glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+
+				// The VBO containing the colors of the particles
+				glGenBuffers(1, &u.billboardColorBuffer);
+				glBindBuffer(GL_ARRAY_BUFFER, u.billboardColorBuffer);
+				// Initialize with empty (NULL) buffer : it will be updated later, each frame.
+				glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+
+				return u;
+			}
 			ShaderUniforms LoadUniforms(const GLuint program) {
 				ShaderUniforms u;
 				for (int i = 0; i < BOID_COUNT; i++) {
@@ -24,42 +57,6 @@ namespace Engine {
 				}
 				u.projection = LoadUniform(program, "projection");
 				u.view = LoadUniform(program, "view");
-
-				//float vertices[] = {
-				//	 0.5f,  0.5f, 0.0f,  // top right
-				//	 0.5f, -0.5f, 0.0f,  // bottom right
-				//	-0.5f, -0.5f, 0.0f,  // bottom left
-				//	-0.5f,  0.5f, 0.0f   // top left 
-				//};
-				//unsigned int indices[] = {  // note that we start from 0!
-				//	0, 1, 3,  // first Triangle
-				//	1, 2, 3   // second Triangle
-				//};
-
-				//glGenVertexArrays(1, &u.VAO);
-				//glGenBuffers(1, &u.VBO);
-				//glGenBuffers(1, &u.EBO);
-				//// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-				//glBindVertexArray(u.VAO);
-
-				//glBindBuffer(GL_ARRAY_BUFFER, u.VBO);
-				//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-				//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, u.EBO);
-				//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-				//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-				//glEnableVertexAttribArray(0);
-
-				//// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-				//glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-				//// remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
-				////glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-				//// You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-				//// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-				//glBindVertexArray(0);
 
 				float vertices[] = {
 					-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -120,70 +117,84 @@ namespace Engine {
 				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 				glEnableVertexAttribArray(1);
 
-				// load and create a texture 
-	// -------------------------
-				//unsigned int texture1, texture2;
-				//// texture 1
-				//// ---------
-				//glGenTextures(1, &texture1);
-				//glBindTexture(GL_TEXTURE_2D, texture1);
-				//// set the texture wrapping parameters
-				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-				//// set texture filtering parameters
-				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				//// load image, create texture and generate mipmaps
-				//int width, height, nrChannels;
-				//stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-				//unsigned char* data = stbi_load(FileSystem::getPath("resources/textures/container.jpg").c_str(), &width, &height, &nrChannels, 0);
-				//if (data)
-				//{
-				//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-				//	glGenerateMipmap(GL_TEXTURE_2D);
-				//}
-				//else
-				//{
-				//	std::cout << "Failed to load texture" << std::endl;
-				//}
-				//stbi_image_free(data);
-				//// texture 2
-				//// ---------
-				//glGenTextures(1, &texture2);
-				//glBindTexture(GL_TEXTURE_2D, texture2);
-				//// set the texture wrapping parameters
-				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-				//// set texture filtering parameters
-				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-				//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				//// load image, create texture and generate mipmaps
-				//data = stbi_load(FileSystem::getPath("resources/textures/awesomeface.png").c_str(), &width, &height, &nrChannels, 0);
-				//if (data)
-				//{
-				//	// note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
-				//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-				//	glGenerateMipmap(GL_TEXTURE_2D);
-				//}
-				//else
-				//{
-				//	std::cout << "Failed to load texture" << std::endl;
-				//}
-				//stbi_image_free(data);
-
 				return u;
+			}
+
+			void PrepareParticleShader(const ParticleShaderUniforms u, const GLuint program, const glm::mat4 vp, glm::vec3 camRight, glm::vec3 camUp) {
+				glUseProgram(program);
+				glUniformMatrix4fv(u.VP, 1, GL_FALSE, &vp[0][0]);
+				glUniform3f(u.CameraRight_worldspace, camRight.x, camRight.y, camRight.z);
+				glUniform3f(u.CameraUp_worldspace, camUp.x, camUp.y, camUp.z);
 			}
 
 			void PrepareShader(const ShaderUniforms u, const GLuint program, const glm::mat4 projection, const glm::mat4 view) {
 				glUseProgram(program);
-				//glUniform3f(u.color, color.x, color.y, color.z);
 				glUniformMatrix4fv(u.projection, 1, GL_FALSE, &projection[0][0]);
 				glUniformMatrix4fv(u.view, 1, GL_FALSE, &view[0][0]);
 			}
 
-			void RenderTemp(const ShaderUniforms u, Boid v[]) {
+			void RenderParticles(const ParticleShaderUniforms u, Particle particles[], GLfloat particlePositionData[], GLubyte particleColorData[], int count) {
+				glBindVertexArray(u.VAO);
+				glBindBuffer(GL_ARRAY_BUFFER, u.billboardPositionBuffer);
+				glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
+				glBufferSubData(GL_ARRAY_BUFFER, 0, count * sizeof(GLfloat) * 4, particlePositionData);
+
+				glBindBuffer(GL_ARRAY_BUFFER, u.billboardColorBuffer);
+				glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
+				glBufferSubData(GL_ARRAY_BUFFER, 0, count * sizeof(GLubyte) * 4, particleColorData);
+
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glEnableVertexAttribArray(0);
+				glBindBuffer(GL_ARRAY_BUFFER, u.billboardVertexBuffer);
+				glVertexAttribPointer(
+					0,                  // attribute. No particular reason for 0, but must match the layout in the shader.
+					3,                  // size
+					GL_FLOAT,           // type
+					GL_FALSE,           // normalized?
+					0,                  // stride
+					(void*)0            // array buffer offset
+				);
+
+				// 2nd attribute buffer : positions of particles' centers
+				glEnableVertexAttribArray(1);
+				glBindBuffer(GL_ARRAY_BUFFER, u.billboardPositionBuffer);
+				glVertexAttribPointer(
+					1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+					4,                                // size : x + y + z + size => 4
+					GL_FLOAT,                         // type
+					GL_FALSE,                         // normalized?
+					0,                                // stride
+					(void*)0                          // array buffer offset
+				);
+
+				glEnableVertexAttribArray(2);
+				glBindBuffer(GL_ARRAY_BUFFER, u.billboardColorBuffer);
+				glVertexAttribPointer(
+					2,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+					4,                                // size : r + g + b + a => 4
+					GL_UNSIGNED_BYTE,                 // type
+					GL_TRUE,                          // normalized?    *** YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader ***
+					0,                                // stride
+					(void*)0                          // array buffer offset
+				);
+
+				glVertexAttribDivisor(0, 0); // particles vertices : always reuse the same 4 vertices -> 0
+				glVertexAttribDivisor(1, 1); // positions : one per quad (its center)                 -> 1
+				glVertexAttribDivisor(2, 1); // color : one per quad                                  -> 1
+
+				glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, count);
+
+				glDisableVertexAttribArray(0);
+				glDisableVertexAttribArray(1);
+				glDisableVertexAttribArray(2);
+			}
+
+			void Render(const ShaderUniforms u, Boid v[]) {
+				glClear(GL_DEPTH_BUFFER_BIT); 
 				glBindVertexArray(u.VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-				
+				glEnableVertexAttribArray(0);
+				glEnableVertexAttribArray(1);
 				for (unsigned int j = 0; j < BOID_COUNT; j+= 200)
 				{
 					unsigned int i = 0;
@@ -196,7 +207,7 @@ namespace Engine {
 							model = glm::scale(model, glm::vec3(.3f));
 						}
 						else {
-							model = glm::scale(model, glm::vec3(0.1));
+							model = glm::scale(model, glm::vec3(0.05));
 						}
 						
 						
@@ -208,6 +219,7 @@ namespace Engine {
 					}
 					glDrawArraysInstanced(GL_TRIANGLES, 0, 36, i);
 				}
+				//glEnable(GL_DEPTH_TEST);
 			}
 
 			GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path) {

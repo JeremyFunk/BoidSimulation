@@ -11,6 +11,7 @@ Boid::Boid() {
     location = glm::vec3(0.0);
     velocity = glm::vec3(0.0);
     acceleration = glm::vec3(0.0);
+    particleTimer = 0.1f;
     for (int i = 0; i < BOID_COUNT; i++) {
         distances[i] = 0.f;
     }
@@ -29,13 +30,15 @@ void Boid::randomize(int i) {
     }*/
     //velocity = glm::vec3(0.0);
 }
+
 double inline __declspec (naked) __fastcall sqrtFast(double n)
 {
     _asm fld qword ptr[esp + 4]
         _asm fsqrt
     _asm ret 8
 }
-void Boid::run(Boid v[], int self, float separation, float alignment, float cohesion, float desiredSeparation, float visionRadius, float angleCutoff, float maxSpeed) {
+
+void Boid::run(Boid v[], int self, float separation, float alignment, float cohesion, float desiredSeparation, float visionRadius, float angleCutoff, float maxSpeed, float dt) {
     float visionRadius2 = visionRadius * visionRadius;
     glm::vec3 repulsion = glm::vec3(0.0);
     glm::vec3 directions = glm::vec3(0.0);
@@ -54,7 +57,8 @@ void Boid::run(Boid v[], int self, float separation, float alignment, float cohe
     int nearbySep = 0;
     glm::vec3 velocityN = glm::normalize(velocity);
     for (int i = 0; i < BOID_COUNT; i++) {
-        distances[i] -= maxSpeed;
+        distances[i] -= maxSpeed; 
+        //int num = *reinterpret_cast<int*>(&distances[i]);
         if (distances[i] < visionRadius2 && i != self) {
             //glm::vec3 connect = v[i].location - location;
             float connectX = v[i].location.x - location.x;
