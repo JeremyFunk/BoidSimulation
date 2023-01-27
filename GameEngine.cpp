@@ -107,8 +107,9 @@ int main()
 		float particleLifetimeInv = 1.f / particleLifetime;
 		for (int i = 0; i < BOID_COUNT; i++) {
 			boids[i].particleTimer -= deltaTime;
-
-			while(boids[i].particleTimer < 0.f) {
+			int totalRuns = 0;
+			while(boids[i].particleTimer < 0.f && totalRuns < 4) {
+				totalRuns++;
 				float lifetimeInterval = 1.f + particleLifetime * boids[i].particleTimer;
 				boids[i].particleTimer += particlesEvery;
 				int particleIndex = FindUnusedParticle();
@@ -229,7 +230,7 @@ int main()
 		Core::GLPrepare();
 		if (!first) {
 			for (int i = 0; i < NUM_THREADS; i++) {
-				//threads[i].join();
+				threads[i].join();
 			}
 			for (int i = 0; i < BOID_COUNT; i++) {
 				boids[i].update(deltaTime, minSpeed, maxSpeed, inertia);
@@ -245,11 +246,11 @@ int main()
 				numBoids++;
 				remainingBoids--;
 			}
-			//threads[i] = std::thread([&boids, boidIndex, numBoids, separation, alignment, cohesion, desiredSeparation, visionRadius, angleCutoff, maxSpeed] {
+			threads[i] = std::thread([&boids, boidIndex, numBoids, separation, alignment, cohesion, desiredSeparation, visionRadius, angleCutoff, maxSpeed] {
 				for (int i = 0; i < numBoids; i++) {
 					boids[i + boidIndex].run(boids, i + boidIndex, separation, alignment, cohesion, desiredSeparation, visionRadius, angleCutoff, maxSpeed * deltaTime, deltaTime);
 				}
-			//});
+			});
 			//threadPool.enqueue([&boids, boidIndex, numBoids, separation, alignment, cohesion, desiredSeparation, visionRadius, angleCutoff] {
 			boidIndex += numBoids;
 		}
@@ -309,6 +310,6 @@ int main()
 	} while (glfwWindowShouldClose(GetWindowData().window) == 0);
 
 	for (int i = 0; i < NUM_THREADS; i++) {
-		//threads[i].join();
+		threads[i].join();
 	}
 }
